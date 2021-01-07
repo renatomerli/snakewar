@@ -101,7 +101,7 @@ void Engine::kill(SnakeBase* _snake)
 
 void Engine::run()
 {   
-
+    usleep(10000);
     while (++steps < 10000)
     {
         while (AppConfig::get_instance()->get_stoped()) {  usleep(10000); view->refresh(); view->get_command();}
