@@ -4,11 +4,11 @@ NCURSES = $(shell pkg-config --libs --cflags ncurses)
 
 REQ := $(shell pkg-config --cflags ncurses)
 
-
 all: snakewar
 ifndef REQ
     $(error "ncurses library not found. You need to install it to compile this project.")
 endif
+
 snakewar: cartesian.o spin.o snake.o engine.o 
 	$(CC) -o snakewar cartesian.o spin.o snake.o engine.o snakewar.cpp $(NCURSES) $(CFLAGS) $(INCLUDES)
 
