@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include "config.h"
 
+#include <SDL2/SDL_events.h>
 
 Engine::Engine(int Xres, int Yres)
 {
@@ -35,7 +36,7 @@ void Engine::reset_apple()
     Cartesian _last_apple = apple;
     while (_last_apple == apple || have_dot(apple))  apple = get_randon_dot();
     apple_count++;
-    view->printxy( apple, 'G', 3);
+    view->print_apple( apple);
 }
 Cartesian Engine::get_randon_dot()
 {
@@ -72,14 +73,16 @@ bool Engine::check_border (Cartesian _input)
 
 void Engine::move(SnakeBase* _snake, Spin _spin )
 {
+    
     Cartesian _target = _snake->get_head() + _spin;
     _snake->get_body().push_front(_target);
-    view->printxy(_target, '#' , _snake->get_num());
+    view->print_dot(_target,  _snake->get_num());
+
     
     if (_target != apple ) 
     {
-    view->printxy(_snake->get_body().back(), ' ', 0);
-    _snake->get_body().pop_back();
+        view->delete_dot(_snake->get_body().back());
+        _snake->get_body().pop_back();
     }
     else
     {
@@ -92,7 +95,7 @@ void Engine::kill(SnakeBase* _snake)
 {
     for (auto _dot : _snake->get_body())
     {
-        view->printxy(_dot, ' ', 0);
+        view->delete_dot(_dot);
     }
     _snake->die();
     num_snakes--;
@@ -101,7 +104,7 @@ void Engine::kill(SnakeBase* _snake)
 
 void Engine::run()
 {   
-    usleep(10000);
+
     while (++steps < 10000)
     {
         while (AppConfig::get_instance()->get_stoped()) {  usleep(10000); view->refresh(); view->get_command();}
@@ -115,11 +118,6 @@ void Engine::run()
 
             if ( ! validate_step (tmp_snake->get_head() + tspin)) 
             { 
-//                cout << "Morrendo em validate_step" << endl ;
-//                cout << "Gold: " ; apple.print();  
-//                cout << "Head: " ; tmp_snake->get_head().print();;
-//                cout << "Size: " << tmp_snake->size() << endl;
- //               cout << "Spin: " ; tspin.print();
 
                 kill(tmp_snake);
                 continue;
@@ -127,13 +125,17 @@ void Engine::run()
 
             move(tmp_snake, tspin);
         }
-        if (! get_num_snakes()) { getch(); continue ;}
+        if (! get_num_snakes()) {  continue ;}
         view->get_command();
         view->refresh();
         usleep(AppConfig::get_instance()->get_delay()  );
 
+SDL_Event evt;
+{
+  SDL_PollEvent(&evt);
+  if(evt.type == SDL_QUIT)
+    exit(1);
+}
     }
-//        for (SnakeBase *tmp_snake : snakes_list) { cout << endl << "Benchmark snake " << tmp_snake->get_name() << endl << "target: "; apple.print(); tmp_snake->print(); }
-//        cout << "terminado apos " << apple_count << " apples e em " << steps << " passos" << endl;
 
 }

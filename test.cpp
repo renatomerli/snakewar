@@ -2,6 +2,12 @@
 #include "globals.h"
 #include <iostream>
 
+
+#include <SDL2/SDL.h> 
+#include <SDL2/SDL_image.h> 
+#include <SDL2/SDL_timer.h> 
+
+
 void testspin ()
 {
 cout << endl << "Testing spins..." << endl;
@@ -19,23 +25,20 @@ Cartesian x (1,2); x.print();
 cout << "y ";
 Cartesian y (2,3); y.print();
 
-
 cout << "z (x+y) ";
 Cartesian z = x + y; z.print();
-
 cout << "diif (x <> y) " <<  x % y << endl;
-
-
 cout << "(x == y) ? " << (x == y ? "true" : "false") << endl ;
-
-
 }
+
+
+
+
+
 
 
 int main()
 {
-
     testspin();
     testdot();
-
 }

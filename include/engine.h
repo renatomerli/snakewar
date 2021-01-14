@@ -3,7 +3,7 @@
 #include "cartesian.h"
 #include "snake.h"
 #include "config.h"
-#include "view.h"
+#include "ncview.h"
 
 using namespace std;
 #include <vector>
@@ -20,7 +20,7 @@ class Engine
     Cartesian apple;
     int apple_count=0;
 
-    public: Board *view;
+    public: ViewBase *view;
 
     list<SnakeBase*> snakes_list; 
 

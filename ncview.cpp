@@ -1,24 +1,13 @@
-#pragma once
-
-#include <ncurses.h>
-#include <iostream>
-
 #include "cartesian.h"
-//#include "config.h"
+#include "viewbase.h"
+#include "ncview.h"
+#include <ncurses.h>
 
+#include "config.h"
 
-#define COLOR_BKG COLOR_BLACK
+NCView::~NCView()  {delwin(viewer); delwin(border); endwin();}
 
-class Board
-{
-    private:
-    WINDOW *border;
-    WINDOW *viewer;
-    int Xres, Yres;
-
-    public: 
-    ~Board() {delwin(viewer); delwin(border); endwin();}
-    Board ()
+NCView::NCView () 
     {
 
         stdscr = initscr();
@@ -39,7 +28,7 @@ class Board
         init_pair(77, COLOR_WHITE, COLOR_BKG);
     }
 
-    Cartesian get_resolution()
+Cartesian NCView::get_resolution()
     {
 
         int x, y;
@@ -47,27 +36,72 @@ class Board
         return Cartesian(x,y);
     }
 
-    void init(Cartesian _res)
+void NCView::init(Cartesian res)
     {
-        init (_res.getX(), _res.getY());
-    }
-
-    void init(int _Xres, int _Yres)
-    {
-        Xres = _Xres;
-        Yres = _Yres;
         
-        border = newwin(Yres, Xres, 0,0);
+        border = newwin(res.getY(), res.getX(), 0,0);
         wattron(border, COLOR_PAIR(2));
         box(border, 0,0 );
 
-        viewer = newwin( Yres-2, Xres-2, 1,1);
+        viewer = newwin( res.getY()-2, res.getX()-2, 1,1);
 
         wrefresh(viewer);
     
     }
 
-    void process_command (int _command)
+
+void NCView::print_apple(Cartesian pos)
+{
+
+        wattron(viewer, COLOR_PAIR(4));
+        printyx (pos, 'G');
+
+
+}
+void NCView::delete_dot(Cartesian pos)
+{
+        wattron(viewer, COLOR_PAIR(0));
+        printyx (pos, ' ');
+
+
+}
+
+void NCView::print_dot (Cartesian pos, int color)
+    {
+       wattron(viewer, COLOR_PAIR(color));
+       printyx (pos, '#');
+    }
+
+
+
+void NCView::printyx (Cartesian pos, char ch)
+    {
+        mvwaddch  ( viewer, pos.getY(), pos.getX(), ch);
+
+    }
+void NCView::print (string input)
+    {
+        wprintw (viewer,  input.c_str());
+    }
+
+void NCView::refresh()
+    {
+    wrefresh(border);
+    wrefresh(viewer);
+    }
+
+void NCView::get_command()
+    {
+    int command = 0;
+    
+    if ( (command = getch()) != ERR) 
+    {
+        if (command == 27 ) { getch(); process_command(getch()); }
+        else if (command != ERR )process_command (command);
+    }
+    }
+
+void NCView::process_command (int _command)
     {
 
         switch (_command)
@@ -104,37 +138,3 @@ class Board
 
     }
 
-    void get_command()
-    {
-    int command = 0;
-    
-    if ( (command = getch()) != ERR) 
-    {
-        if (command == 27 ) { getch(); process_command(getch()); }
-        else if (command != ERR )process_command (command);
-    }
-    }
-
-    void printxy(int X, int Y, char ch, int color_code)
-    {
-        wattron(viewer, COLOR_PAIR(color_code));
-        mvwaddch  ( viewer, Y, X, ch);
-    }
-
-    void printxy (Cartesian _dot, char ch, int color_code)
-    {
-        printxy (_dot.getX(), _dot.getY(), ch, color_code);
-    }
-
-    void print (string input)
-    {
-        wprintw (viewer,  input.c_str());
-    }
-
-    void refresh()
-    {
-    wrefresh(border);
-    wrefresh(viewer);
-    }
-    
-};
