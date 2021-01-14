@@ -37,7 +37,6 @@ my_engine.view = &sdl_view;
 //nc_view.init(resolution);
 //my_engine.view = &nc_view;
 
-
 // create and attach five players
 SnakeBase Player1("Player 1");  
 my_engine.attach(&Player1);

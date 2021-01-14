@@ -1,6 +1,7 @@
 #include "cartesian.h"
 #include "sdlview.h"
 #include "rgb.h"
+#include "config.h"
 
 SdlView::SdlView(){};
 
@@ -52,5 +53,39 @@ void SdlView::refresh()
     SDL_RenderPresent(renderer); 
 }
     
-void SdlView::get_command(){};
+void SdlView::get_command()
+{
+    SDL_Event evt;
+
+    if (SDL_PollEvent(&evt))
+        switch(evt.type)
+        {
+            case SDL_KEYDOWN:
+            AppConfig::get_instance()->increase_delay();
+            break;
+
+            case SDL_KEYUP:
+            AppConfig::get_instance()->decrease_delay();           
+            break;
+
+/*        case 51:
+            AppConfig::get_instance()->increase_delayx();           
+            break;
+        case 57:
+            AppConfig::get_instance()->decrease_delayx();           
+            break;
+*/
+        case SDL_QUIT:
+        case 'q':
+            SDL_Quit();
+            break;
+
+
+        }
+    
+
+
+
+
+};
 

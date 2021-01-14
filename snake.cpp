@@ -68,6 +68,9 @@ Spin SnakeBase::play(Cartesian _resolution, Cartesian _target, std::list<SnakeBa
     int distance = get_head() % _target;
 
 //    cout << "Name: " << get_name() << " - size " << size() << " and distance: " << distance << " to destiny " ; _target.print();
+
+    if (( ((my_spin + get_head()) % _target) < distance) && can_move (my_spin, snakes, _resolution) ) return my_spin;
+
     if (( ((get_head() + UP) % _target) < distance) && my_spin.can_set(UP) && can_move (UP, snakes, _resolution)  ) {   return my_spin = UP; } 
     if ((  ((get_head() + DOWN) % _target) < distance) && my_spin.can_set(DOWN) && can_move (DOWN, snakes, _resolution)  ) {  return my_spin = DOWN; } 
     if ((  ((get_head() + RIGHT) % _target) < distance) && my_spin.can_set(RIGHT) && can_move (RIGHT, snakes, _resolution) ) {  return my_spin = RIGHT; }

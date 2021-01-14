@@ -125,17 +125,12 @@ void Engine::run()
 
             move(tmp_snake, tspin);
         }
-        if (! get_num_snakes()) {  continue ;}
-        view->get_command();
+        if (! num_snakes) {  continue ;}
         view->refresh();
+        view->get_command();
         usleep(AppConfig::get_instance()->get_delay()  );
 
-SDL_Event evt;
-{
-  SDL_PollEvent(&evt);
-  if(evt.type == SDL_QUIT)
-    exit(1);
-}
-    }
 
+
+    }
 }
