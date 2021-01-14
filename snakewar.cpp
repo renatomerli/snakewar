@@ -56,7 +56,6 @@ my_engine.attach(&Player5);
 
 // init engine and call its main loop
 my_engine.init();
-getchar();
 my_engine.run();
 
 }
